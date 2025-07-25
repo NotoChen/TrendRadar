@@ -945,13 +945,6 @@ class StatisticsCalculator:
                 if title in processed_titles.get(source_id, {}):
                     continue
 
-                # 使用统一的匹配逻辑
-                matches_frequency_words = StatisticsCalculator.matches_word_groups(
-                    title, word_groups, filter_words
-                )
-
-                if not matches_frequency_words:
-                    continue
 
                 # 如果是增量模式或 current 模式第一次，统计匹配的新增新闻数量
                 if (mode == "incremental" and all_news_are_new) or (
@@ -1359,10 +1352,7 @@ class ReportGenerator:
         filtered_titles = {}
 
         for title, title_data in titles_data.items():
-            if StatisticsCalculator.matches_word_groups(
-                title, word_groups, filter_words
-            ):
-                filtered_titles[title] = title_data
+            filtered_titles[title] = title_data
 
         return filtered_titles
 
