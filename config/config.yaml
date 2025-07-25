@@ -64,5 +64,5 @@ platforms:
     name: "知乎"
   - id: "v2ex"
     name: "V2EX"
-  - id: "idhome"
+  - id: "ithome"
     name: "IT之家"
