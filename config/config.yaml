@@ -57,7 +57,7 @@ platforms:
     name: "V2EX"
   - id: "juejin"
     name: "稀土掘金"
-  - id: "ithome":
+  - id: "ithome"
     name: "IT之家"
   - id: "hupu"
     name: "虎扑"
