@@ -51,8 +51,6 @@ weight:
 platforms:
   - id: "sspai"
     name: "少数派"
-  - id: "douyin"
-    name: "抖音"
   - id: "v2ex"
     name: "V2EX"
   - id: "juejin"
@@ -61,3 +59,7 @@ platforms:
     name: "IT之家"
   - id: "hupu"
     name: "虎扑"
+  - id: "zhihu"
+    name: "知乎"
+  - id: "chongbuluo"
+    name: "虫部落"
