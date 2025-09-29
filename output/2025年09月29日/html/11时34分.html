@@ -1,0 +1,767 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>热点新闻分析</title>
+        <style>
+            * { box-sizing: border-box; }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+                margin: 0; 
+                padding: 16px; 
+                background: #fafafa;
+                color: #333;
+                line-height: 1.5;
+            }
+            
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            }
+            
+            .header {
+                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                color: white;
+                padding: 32px 24px;
+                text-align: center;
+            }
+            
+            .header-title {
+                font-size: 22px;
+                font-weight: 700;
+                margin: 0 0 20px 0;
+            }
+            
+            .header-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                font-size: 14px;
+                opacity: 0.95;
+            }
+            
+            .info-item {
+                text-align: center;
+            }
+            
+            .info-label {
+                display: block;
+                font-size: 12px;
+                opacity: 0.8;
+                margin-bottom: 4px;
+            }
+            
+            .info-value {
+                font-weight: 600;
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .word-group {
+                margin-bottom: 40px;
+            }
+            
+            .word-group:first-child {
+                margin-top: 0;
+            }
+            
+            .word-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .word-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .word-name {
+                font-size: 17px;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+            
+            .word-count {
+                color: #666;
+                font-size: 13px;
+                font-weight: 500;
+            }
+            
+            .word-count.hot { color: #dc2626; font-weight: 600; }
+            .word-count.warm { color: #ea580c; font-weight: 600; }
+            
+            .word-index {
+                color: #999;
+                font-size: 12px;
+            }
+            
+            .news-item {
+                margin-bottom: 20px;
+                padding: 16px 0;
+                border-bottom: 1px solid #f5f5f5;
+                position: relative;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+            
+            .news-item:last-child {
+                border-bottom: none;
+            }
+            
+            .news-item.new::after {
+                content: "NEW";
+                position: absolute;
+                top: 12px;
+                right: 0;
+                background: #fbbf24;
+                color: #92400e;
+                font-size: 9px;
+                font-weight: 700;
+                padding: 3px 6px;
+                border-radius: 4px;
+                letter-spacing: 0.5px;
+            }
+            
+            .news-number {
+                color: #999;
+                font-size: 13px;
+                font-weight: 600;
+                min-width: 20px;
+                text-align: center;
+                flex-shrink: 0;
+                background: #f8f9fa;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: flex-start;
+                margin-top: 8px;
+            }
+            
+            .news-content {
+                flex: 1;
+                min-width: 0;
+                padding-right: 40px;
+            }
+            
+            .news-item.new .news-content {
+                padding-right: 50px;
+            }
+            
+            .news-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+                flex-wrap: wrap;
+            }
+            
+            .source-name {
+                color: #666;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            
+            .rank-num {
+                color: #fff;
+                background: #6b7280;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 2px 6px;
+                border-radius: 10px;
+                min-width: 18px;
+                text-align: center;
+            }
+            
+            .rank-num.top { background: #dc2626; }
+            .rank-num.high { background: #ea580c; }
+            
+            .time-info {
+                color: #999;
+                font-size: 11px;
+            }
+            
+            .count-info {
+                color: #059669;
+                font-size: 11px;
+                font-weight: 500;
+            }
+            
+            .news-title {
+                font-size: 15px;
+                line-height: 1.4;
+                color: #1a1a1a;
+                margin: 0;
+            }
+            
+            .news-link {
+                color: #2563eb;
+                text-decoration: none;
+            }
+            
+            .news-link:hover {
+                text-decoration: underline;
+            }
+            
+            .news-link:visited {
+                color: #7c3aed;
+            }
+            
+            .new-section {
+                margin-top: 40px;
+                padding-top: 24px;
+                border-top: 2px solid #f0f0f0;
+            }
+            
+            .new-section-title {
+                color: #1a1a1a;
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0 0 20px 0;
+            }
+            
+            .new-source-group {
+                margin-bottom: 24px;
+            }
+            
+            .new-source-title {
+                color: #666;
+                font-size: 13px;
+                font-weight: 500;
+                margin: 0 0 12px 0;
+                padding-bottom: 6px;
+                border-bottom: 1px solid #f5f5f5;
+            }
+            
+            .new-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 8px 0;
+                border-bottom: 1px solid #f9f9f9;
+            }
+            
+            .new-item:last-child {
+                border-bottom: none;
+            }
+            
+            .new-item-number {
+                color: #999;
+                font-size: 12px;
+                font-weight: 600;
+                min-width: 18px;
+                text-align: center;
+                flex-shrink: 0;
+                background: #f8f9fa;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .new-item-rank {
+                color: #fff;
+                background: #6b7280;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 3px 6px;
+                border-radius: 8px;
+                min-width: 20px;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            
+            .new-item-rank.top { background: #dc2626; }
+            .new-item-rank.high { background: #ea580c; }
+            
+            .new-item-content {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .new-item-title {
+                font-size: 14px;
+                line-height: 1.4;
+                color: #1a1a1a;
+                margin: 0;
+            }
+            
+            .error-section {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 24px;
+            }
+            
+            .error-title {
+                color: #dc2626;
+                font-size: 14px;
+                font-weight: 600;
+                margin: 0 0 8px 0;
+            }
+            
+            .error-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .error-item {
+                color: #991b1b;
+                font-size: 13px;
+                padding: 2px 0;
+                font-family: 'SF Mono', Consolas, monospace;
+            }
+            
+            @media (max-width: 480px) {
+                body { padding: 12px; }
+                .header { padding: 24px 20px; }
+                .content { padding: 20px; }
+                .header-info { grid-template-columns: 1fr; gap: 12px; }
+                .news-header { gap: 6px; }
+                .news-content { padding-right: 45px; }
+                .news-item { gap: 8px; }
+                .new-item { gap: 8px; }
+                .news-number { width: 20px; height: 20px; font-size: 12px; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="header-title">热点新闻分析</div>
+                <div class="header-info">
+                    <div class="info-item">
+                        <span class="info-label">报告类型</span>
+                        <span class="info-value">实时分析</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">新闻总数</span>
+                        <span class="info-value">38 条</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">热点新闻</span>
+                        <span class="info-value">38 条</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">生成时间</span>
+                        <span class="info-value">09-29 11:34</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="word-group">
+                    <div class="word-header">
+                        <div class="word-info">
+                            <div class="word-name">全部新闻</div>
+                            <div class="word-count hot">38 条</div>
+                        </div>
+                        <div class="word-index">1/1</div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">1</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">V2EX</span><span class="rank-num top">1</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.v2ex.com/t/1162574" target="_blank" class="news-link">节前持股还是持币，各位大佬讨论下</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">2</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num top">1</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/577.htm" target="_blank" class="news-link">荣耀 MagicPad3 Pro 13.3 平板电脑核心参数公布：165Hz LCD 面板、12450mAh 电池</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">3</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">V2EX</span><span class="rank-num top">2</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.v2ex.com/t/1162568" target="_blank" class="news-link">最近一段时间股沟账号不能登录，我的很多网站包含 v 都是用股沟账号注册的，更糟的是</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">4</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num top">2</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/576.htm" target="_blank" class="news-link">中国家用电器协会倡议：杜绝无序低价竞争，坚决不搞低于成本价倾销</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">5</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">V2EX</span><span class="rank-num top">3</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.v2ex.com/t/1162566" target="_blank" class="news-link">庆祝开源项目破 100star，抽两张大头贴拍摄免单券，国庆可以和自己的老婆孩子、对象去拍</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">6</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num top">3</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/575.htm" target="_blank" class="news-link">蔚来在北京、上海、澳门、江苏、浙江、广东、天津、重庆、海南实现换电县县通，换电站覆盖全国超 1200 个区县</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">7</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num high">4</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/574.htm" target="_blank" class="news-link">英韧预计 2026 年推出 PCIe 6.0 AI 固态硬盘，支持 NVMe + CXL 双协议</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">8</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num high">5</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/573.htm" target="_blank" class="news-link">OPPO Find X9 Pro 手机核心规格公布：6.78 英寸 1.5K OLED 直屏、极窄四等边大 R 角设计</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">9</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">6</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/572.htm" target="_blank" class="news-link">总投资约 2 亿元，长江首艘光伏发电豪华游轮“美维凯璇”首航</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">10</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">7</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/570.htm" target="_blank" class="news-link">XPPen 推出 Artist Ultra 16 触控手绘屏：15.6&quot; UHD AMOLED，16K 级压感</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">11</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">7</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/1954621877319374786" target="_blank" class="news-link">蛇的体型这么小，力气也没狗大，可以直接凭借身高优势一脚踹死，为什么还有那么多人怕蛇？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">12</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">8</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/569.htm" target="_blank" class="news-link">贾跃亭公布法拉第未来 FX 4 计划：10 月公布设计图、11 月发布、1 月海外上市</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">13</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">8</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/1954855242064700554" target="_blank" class="news-link">如何看待格力高管在壶口瀑布「豪饮」净化后的黄河水？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">14</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">9</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/567.htm" target="_blank" class="news-link">2026 款荣威 i5 车型上市：延续 1.5 升发动机、中高配车型高度降低 7mm，6.89 万元起</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">15</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">9</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/283268384" target="_blank" class="news-link">《天下第一楼》中卢孟实屈不屈？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">16</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">10</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/566.htm" target="_blank" class="news-link">长安林肯航海家燃油 SUV 新增“启航版”上市：全系唯一两驱车型，全款一口价 24.59 万元</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">17</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">10</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/1955603704985133654" target="_blank" class="news-link">如何评价《原神》提瓦特冒险纪念视频：旅行五周年手札？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">18</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">11</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/565.htm" target="_blank" class="news-link">OpenAI ChatGPT 会自动切换严格模型处理情感话题，用户却不知情</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">19</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">11</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/1952337094262388256" target="_blank" class="news-link">如果你已经投掷一枚的硬币 100 次，均出现背面，那么如何证明下一次投掷出现正反面概率相同呢？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">20</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">12</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/564.htm" target="_blank" class="news-link">荣耀 MagicPad3 Pro 13.3 上架官网：平板首发第五代骁龙 8 至尊版处理器、配 12450mAh 电池</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">21</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">12</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634977903.html" target="_blank" class="news-link">[流言板]贾国龙，多个社交账号被清空！</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">22</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">13</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/563.htm" target="_blank" class="news-link">倍思推出 BP1 NC 入耳式蓝牙耳机：-43dB 深度降噪、41 小时续航，首发价 142 元</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">23</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">13</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634988248.html" target="_blank" class="news-link">我只是一个单纯的女菩萨</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">24</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">IT之家</span><span class="rank-num ">14</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.ithome.com/0/886/562.htm" target="_blank" class="news-link">索尼 PS 掌机被曝有望定价 500 美元以内：低功耗 &quot;Canis&quot; SoC 节约外围成本</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">25</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">14</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634975629.html" target="_blank" class="news-link">形势严峻，广东一地誓言不惜一切代价灭蚊</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">26</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">15</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634982590.html" target="_blank" class="news-link">或许你不知道罗兰，但他单挑900斤麝牛的名场面足以让你震撼</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">27</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">16</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634974254.html" target="_blank" class="news-link">西贝公关发文:一位阿姨重度昏迷，昏迷中念念不忘西贝，出院后第一件事就是来西贝吃饭</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">28</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">17</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634983819.html" target="_blank" class="news-link">欺凌者欺负较小的卡拉米，卡拉米为自己站出来，在校车上打败了校霸</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">29</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">18</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634959243.html" target="_blank" class="news-link">日本网友疯传这张图 ！ 自从日本首相石破茂提出将引进10万印度人后</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">30</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">19</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634981990.html" target="_blank" class="news-link">7年前我结婚，朋友出了500块礼钱。下周国庆朋友结婚，我应该给多少合适？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">31</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">20</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634961338.html" target="_blank" class="news-link">最后这一脚也太狠了</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">32</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">知乎</span><span class="rank-num ">20</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://www.zhihu.com/question/1954135105166611842" target="_blank" class="news-link">「不为需要，只为心动」的情价比正成为消费新驱动力，怎样看待这种心理变化？你为情绪价值买过哪些单？</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">33</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">21</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634953257.html" target="_blank" class="news-link">发现神评论</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">34</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">22</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634975180.html" target="_blank" class="news-link">男方真该好好感谢杨笠</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">35</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">23</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634960232.html" target="_blank" class="news-link">广州的黑人现状，我的天啊</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">36</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">虎扑</span><span class="rank-num ">24</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://bbs.hupu.com/634976397.html" target="_blank" class="news-link">【雪中悍刀行】第六期：王府秘密与紫金楼风流</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">37</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">稀土掘金</span><span class="rank-num ">29</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://juejin.cn/post/7553985063395213351" target="_blank" class="news-link">GitHub 上贼牛逼浏览器自动化 MCP，已有 2 万人点赞。</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-item new">
+                        <div class="news-number">38</div>
+                        <div class="news-content">
+                            <div class="news-header">
+                                <span class="source-name">稀土掘金</span><span class="rank-num ">30</span><span class="time-info">11时34分</span>
+                            </div>
+                            <div class="news-title"><a href="https://juejin.cn/post/7553964409955155977" target="_blank" class="news-link">从零到一打造 Vue3 响应式系统 Day 17 - 性能处理：无限循环</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    
